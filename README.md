@@ -9,6 +9,6 @@
 	> Run composer install
 	> Run cp .env.example .env
 	> Run php artisan key:generate 
-	> Run php artisan serve 
+	> Run php artisan serve
 	> Go to the link provided after the serve command
 
