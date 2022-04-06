@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Weather eheh</title>
+        <title>OpenWeatherAPI</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,21 +16,51 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h2 class="display-2 text-center">Current Weather in {{ $weatherDataBody->name }}</h2>
-                    <div class="d-flex justify-content-center">
+                    @if(! ($error ?? false))
+                    <h2 class="display-2 text-center">Current Weather in Pasig</h2>
+
+                    {{-- Current Weather --}}
+                    <div class="d-flex justify-content-center my-1">
                         <div class="card" style="width: 18rem;">
-                          <img src="{{'http://openweathermap.org/img/wn/' . $weatherDataBody->weather[0]->icon . '@2x.png'}}" class="card-img-top" alt="...">
-                          <div class="card-body text-center">
-                            <h5 class="card-title">{{ $weatherDataBody->weather[0]->main }}</h5>
-                            <p class="card-text">{{ $weatherDataBody->weather[0]->description }}</p>
-                            <br>
-                            <h5 class="card-title">{{ 'Stats' }}</h5>
-                            <p class="card-text">Temperature: {{ $weatherDataBody->main->temp }}℃</p>
-                            <p class="card-text">Humidity: {{ $weatherDataBody->main->humidity }}</p>
-                          </div>
+                            <img src="{{'http://openweathermap.org/img/wn/' . $weatherDataBody->daily[0]->weather[0]->icon . '@2x.png'}}" class="card-img-top" alt="...">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ 'Today' }}</h5>
+                                <hr>
+                                <h5 class="card-title">{{ $weatherDataBody->daily[0]->weather[0]->main }}</h5>
+                                <p class="card-text">{{ $weatherDataBody->daily[0]->weather[0]->description }}</p>
+                                <hr>
+                                <h5 class="card-title">{{ 'Stats' }}</h5>
+                                <p class="card-text">Temperature: {{ $weatherDataBody->daily[0]->temp->day }}℃</p>
+                                <p class="card-text">Humidity: {{ $weatherDataBody->daily[0]->humidity }}</p>
+                            </div>
                         </div>
+                        
                     </div>
-                    
+                    {{-- Week Forecast starting tomorrow --}}
+                    <div class="d-flex justify-content-center">
+                        @foreach($weatherDataBody->daily as $data)
+                            @if ($loop->first) @continue @endif
+                            <div class="card mx-1" style="width: 18rem;">
+                                <img src="{{'http://openweathermap.org/img/wn/' . $data->weather[0]->icon . '@2x.png'}}" class="card-img-top" alt="...">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ date('l', $data->dt) }} <br>{{ date('F d, Y', $data->dt) }}</h5>
+                                    <hr>
+                                    <h5 class="card-title">{{ $data->weather[0]->main }}</h5>
+                                    <p class="card-text">{{ $data->weather[0]->description }}</p>
+                                    <hr>
+                                    <h5 class="card-title">{{ 'Stats' }}</h5>
+                                    <p class="card-text">Temperature: {{ $data->temp->day }}℃</p>
+                                    <p class="card-text">Humidity: {{ $data->humidity }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    @else
+                        <div class="alert alert-danger text-center" role="alert">
+                            {{$error}}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
